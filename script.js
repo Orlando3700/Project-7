@@ -1,115 +1,138 @@
+//script.js
 
-// Function to add a new item to the list
-function addTask() {
-	
-  //This creates a new <li> (list item) element. This will represent a new task in the list.
-  const li = document.createElement("li");
-  //This retrieves the value (text) from an input field with the ID 
-  //myInput. The value property gives the text that the user has 
-  //entered into the input box.
-  const inputValue = document.getElementById("myInput").value;
-  //This creates a text node containing the task text (inputValue). 
-  const textNode = document.createTextNode(inputValue);
-  //This appends the created text node to the <li> element (li).
-  li.appendChild(textNode);
+// Function to load tasks from localStorage
+function loadTasks() {
+	//Retrieves the tasks item from localStorage as a string.
+    const stored = localStorage.getItem('tasks');
+    let tasks = [];	//Initialize an empty array
 
-  // Create a checkbox for the item
-  const checkbox = document.createElement("input");
-  checkbox.type = "checkbox";
-
-  //Create an edit button
-  const editButton = document.createElement("button");
-  editButton.textContext = "Edit";
-  editButton.classList.add("edit-button")
-
-  // Create a delete button
-  const deleteButton = document.createElement("button");
-  deleteButton.textContent = "Delete";
-  deleteButton.classList.add("delete-button");
-
-  // Append the checkbox to the list item
-  li.appendChild(checkbox);
-  
-  //Append the edit button to the list item
-  li.appendChild(editButton);
-
-  // Append the delete button to the list item
-  li.appendChild(deleteButton);
-
-
-  if (inputValue === '') {
-    alert("You have to write a new task");
-  } else {
-	//This appends the newly created <li> (containing the task) to 
-	//an existing element with the ID "myTasks". This is where the 
-	//new task will appear in the list.
-    document.getElementById("myTasks").appendChild(li);
-  }
-
-//After adding the task to the list, this line clears the input 
-//field (myInput) by setting its value to an empty string (""). 
-//This makes the input field ready for the next task.
-  document.getElementById("myInput").value = "";
-
-  // Add event listener for task completion
-  checkbox.addEventListener("click", function () {
-  li.classList.toggle("completed", checkbox.checked);
-});
-
-  editButton.addEventListener("click", function () {
-	const newText = prompt("Edit your task:", textNode.textContent);
-    if (newText !== null && newText !== "") {
-      textNode.textContent = newText;
+    try {
+		//Tries to parse the string into a JavaScript array of objects
+        const parsed = JSON.parse(stored);
+		//If parsed data is an array, we filter out any invalid entries
+        if (Array.isArray(parsed)) {
+            tasks = parsed.filter(task => task && typeof task.id === 'string' && typeof task.content === 'string');
+        }
+	//If parsing fails, we log a warning and remove the corrupted "tasks" from localStorage.
+    } catch (e) {
+        console.warn("Invalid tasks in localStorage");
+        localStorage.removeItem('tasks'); // Clear invalid data
     }
-  });
-
-  deleteButton.addEventListener("click", function () {
-  if (confirm("Are you sure you want to delete this item?")) {
-    li.remove();
-  }
-});
+	//For each valid task, we create a DOM element and add it to the list (<ul>).
+    tasks.forEach(task => {
+        const taskItem = createTaskItem(task.id, task.content);
+        tasksList.appendChild(taskItem);
+    });
 }
 
-// Create a new list
-document.getElementById("new-list-button").addEventListener("click", function () {
-  // Create a new list container
-  const listContainer = document.createElement("div");
-  listContainer.classList.add("list-container");
+//function loadTasks() {
+    //const tasks = JSON.parse(localStorage.getItem('tasks')) || [];
+    //tasks.forEach(task => {
+        //const taskItem = createTaskItem(task.id, task.content);
+        //tasksList.appendChild(taskItem);
+    //});
+//}
 
-  // Create a unique ID for the new list
-  const newListId = "list-" + Date.now();
-  
-  const listTitle = document.createElement("h3");
-  listTitle.textContent = "New List";
-  listContainer.appendChild(listTitle);
+// Function to save a task to localStorage
+function saveTaskToStorage(id, content) {
+	//Gets the current list of tasks from localStorage. 
+	//If it doesn't exist, start with an empty array.
+    const tasks = JSON.parse(localStorage.getItem('tasks')) || [];
+	//Adds the new task to the array, then saves the updated array 
+	//back to localStorage as a string
+    tasks.push({ id, content });
+    localStorage.setItem('tasks', JSON.stringify(tasks));
+}
 
-  // Create the new list
-  const ul = document.createElement("ul");
-  ul.id = newListId;
-  listContainer.appendChild(ul);
+// Get references to DOM elements
+const inputField = document.getElementById('myInput');
+const submitButton = document.getElementById('submit-button');
+const tasksList = document.getElementById('myTasks');
 
-  // Create the new list task input and button
-  const inputWrapper = document.createElement("div");
-  const inputField = document.createElement("input");
-  inputField.type = "text";
-  inputField.id = "myInput";
-  inputField.placeholder = "New Task";
+// Function to create a new task item and to accept id
+function createTaskItem(id, taskContent) {
+    const li = document.createElement('li'); // Create a new list item
 
-  const submitButton = document.createElement("button");
-  submitButton.textContent = "Submit";
-  submitButton.classList.add("addBtn");
-  submitButton.addEventListener("click", function () {
-    addTask(newListId);
-  });
+    // Create checkbox element
+    const checkbox = document.createElement('input');
+    checkbox.type = 'checkbox';
+    checkbox.classList.add('task-checkbox');
+    
+    // Create delete button element
+    const deleteButton = document.createElement('button');
+    deleteButton.textContent = 'Delete';
+    deleteButton.classList.add('delete-button');
 
-  inputWrapper.appendChild(inputField);
-  inputWrapper.appendChild(submitButton);
-  listContainer.appendChild(inputWrapper);
+    // Add event listener to delete the task when the delete button 
+	// is clicked
+    deleteButton.addEventListener('click', (e) => {
+        e.stopPropagation(); // Prevent the task item click event
+        li.remove(); // Remove the task from the list
 
-  // Append the new list to the main list container
-  document.getElementById("list-container").appendChild(listContainer);
+		// Remove from localStorage
+        const tasks = JSON.parse(localStorage.getItem('tasks')) || [];
+        const updatedTasks = tasks.filter(task => task.id !== id);
+        localStorage.setItem('tasks', JSON.stringify(updatedTasks));
+	 });
+
+    // Add event listener to toggle the task completion when checkbox
+	// is clicked
+    checkbox.addEventListener('change', () => {
+        if (checkbox.checked) {
+            li.style.textDecoration = 'line-through'; // Strike-through when checked
+        } else {
+            li.style.textDecoration = 'none'; // Remove strike-through when unchecked
+        }
+    });
+
+	const editButton = document.createElement('button');
+	editButton.textContent = 'Edit';
+	deleteButton.classList.add('edit-button');
+	editButton.addEventListener('click', (e) => {
+		e.stopPropagation();
+		window.location.href = `edit.html?id=${id}`;	
+	});
+
+    // Append checkbox to the list item
+    li.appendChild(checkbox);
+	// Append task content to the list item
+    li.appendChild(document.createTextNode(taskContent));
+	// Append edit button to the list item
+	li.appendChild(editButton);
+    // Append delete button to the list item
+	li.appendChild(deleteButton);
+
+    return li;
+}
+
+// Event listener for the Submit button
+submitButton.addEventListener('click', () => {
+    const taskContent = inputField.value.trim(); // Get the value from input field
+
+    // Only add the task if the input field is not empty
+	//If the input isn’t empty:
+	//Generates a unique id using the current time
+	//Creates and displays the new task
+	//Saves it to localStorage
+	//Clears the input field
+    if (taskContent !== '') {
+		const id = Date.now().toString(); // Unique ID
+        const newTask = createTaskItem(id, taskContent); //Create a new task
+        tasksList.appendChild(newTask); //Add the task to the list
+        saveTaskToStorage(id, taskContent);
+        inputField.value = ''; //Clear the input field after adding the task
+    }
 });
 
+// functionality when pressing the enter key to submit the task
+inputField.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') {
+		// This triggers the submit button when you press 'enter'
+        submitButton.click();
+    }
+});
 
+//Load saved tasks when the page loads
+window.onload = loadTasks;
 
 

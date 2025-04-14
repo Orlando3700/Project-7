@@ -3,12 +3,14 @@ body{
     font-family: 'Times New Roman', Times, serif;
     font-weight:25;
     display:grid;
-    background: linear-gradient(90deg, rgba(2,0,36,1) 0%, rgba(9,9,121,1) 35%, rgba(0,212,255,1) 100%);
+    background-color: BlanchedAlmond;
+    /*background: linear-gradient(90deg, rgba(2,0,36,1) 0%, rgba(9,9,121,1) 35%, rgba(0,212,255,1) 100%);*/
 }
 
 /* Jumbotron */
 .jumbotron {
-  background-color: #f9f9f9;
+  background-color: white;
+  /*background-color: #f9f9f9;*/
   padding: 30px;
   width: 100%;
   border-radius: 8px;
@@ -38,19 +40,30 @@ body{
   margin-right: 10px;
 }
 
-.addBtn,
-#new-list-button {
+#submit-button {
   padding: 10px 20px;
-  background-color: #007bff;
+  background-color: LightSalmon;
   color: white;
   border: none;
   border-radius: 4px;
   cursor: pointer;
 }
 
-.addBtn:hover,
-#new-list-button:hover {
-  background-color: #0056b3;
+#submit-button:hover {
+  background-color: IndianRed;
+}
+
+#back-button {
+  padding: 10px 20px;
+  background-color: LightSalmon;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+#back-button:hover {
+  background-color: IndianRed;
 }
 
 /* List Container */
@@ -71,7 +84,7 @@ body{
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
-.list-container h3 {
+.list-container h2 {
   text-align: center;
   margin-bottom: 20px;
   font-size: 20px;
@@ -93,6 +106,7 @@ li {
   background-color: #f9f9f9;
   border-radius: 4px;
   transition: background-color 0.3s ease;
+  list-style-type: none;
 }
 
 li:hover {
@@ -118,24 +132,17 @@ input[type="checkbox"] {
   margin-right: 10px;
 }
 
-/* Completed Task Styling */
-.completed {
-  text-decoration: line-through;
-  color: grey;
+.delete-button {
+    margin-left: 10px;
+    background-color: red;
+    color: white;
+    border: none;
+    padding: 5px;
+    cursor: pointer;
 }
 
-/* Edit button style */
-.edit-button {
-  background-color: #ffc107;
-  color: white;
-  padding: 5px 10px;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 14px;
-}
-
-.edit-button:hover {
-  background-color: #e0a800;
+.delete-button:hover {
+    background-color: darkred;
 }
 
 /* Responsive Design */

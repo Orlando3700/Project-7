@@ -1,0 +1,71 @@
+/* General reset and font */
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: BlanchedAlmond;
+  margin: 0;
+  padding: 0;
+}
+
+/* Container styling */
+.container {
+  max-width: 400px;
+  margin: 100px auto;
+  padding: 30px;
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+/* Heading */
+.container h2 {
+  margin-bottom: 20px;
+  color: #333333;
+}
+
+/* Input field */
+#editInput {
+  width: 80%;
+  padding: 12px 15px;
+  margin-bottom: 20px;
+  font-size: 16px;
+  border: 1px solid #cccccc;
+  border-radius: 8px;
+  outline: none;
+  transition: border-color 0.3s ease;
+}
+
+#editInput:focus {
+  border-color: #007bff;
+}
+
+/* Buttons */
+button {
+  padding: 10px 20px;
+  font-size: 14px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  margin: 0 10px;
+  transition: background-color 0.3s ease;
+}
+
+#saveButton {
+  background-color: #28a745;
+  color: white;
+}
+
+#saveButton:hover {
+  background-color: #218838;
+}
+
+#cancelButton {
+  background-color: #dc3545;
+  color: white;
+}
+
+#cancelButton:hover {
+  background-color: #c82333;
+}
+
+
